@@ -1,5 +1,5 @@
-This program allows the player as a Beta (default unit type) to control a bunch
- of Novas (level 1 ground units).
+This program allows the player as a Gamma (default unit type level 3 - change
+ player_unit to yours) to control a bunch of Novas (level 1 ground units).
 The Novas will boost (fly) and follow the player if they are too far (more than
  30 blocks distance). When the player clicks a location, the Novas will approach
  that location and shoot there as soon as they are in range. If they are already
@@ -8,16 +8,20 @@ The Novas will boost (fly) and follow the player if they are too far (more than
  possible, so you can attack a tower while making sure the Novas don't go under
  fire.
 
-Can be turned on/off using a switch nearby.
-Logic processor is recommended.
+If the player is in control of a unit or group of units, the Novas will just
+ stay still until the player is back.
+Can be turned on/off using a switch nearby. When off the units only follow the
+ command center.
+Logic processor or higher is recommended.
 
 To start, place a switch near the processor and link it as switch1 and turn it on.
 
 COPY THE CODE BELOW TO THE PROCESSOR:
 
+set player_unit @gamma
 sensor on switch1 @enabled
-jump 0 equal on false
-ubind @beta
+jump 1 equal on false
+ubind player_unit
 sensor x @unit @x
 sensor y @unit @y
 sensor shooting @unit @shooting
@@ -26,15 +30,15 @@ sensor shootY @unit @shootY
 ubind @nova
 sensor boosting @unit @boosting
 ucontrol within x y 30 within 0
-jump 15 equal within true
-jump 16 equal shooting true
-jump 15 strictEqual x null
+jump 16 equal within true
+jump 17 equal shooting true
+jump 16 strictEqual x null
 ucontrol approach x y 5 0 0
-jump 46 equal within false
+jump 47 equal within false
 sensor range @unit @range
-jump 46 equal shooting false
+jump 47 equal shooting false
 ulocate building turret true @copper outx outy found building
-jump 40 equal found false
+jump 38 equal found false
 sensor tower_type building @type
 sensor tower_range building @range
 sensor tower_x building @x
@@ -53,16 +57,16 @@ op or result result result1
 ucontrol within tower_x tower_y tower_range tower_nearby 0
 op land in_danger result tower_nearby
 ucontrol within shootX shootY range near_enough 0
-jump 40 equal boosting false
+jump 41 equal boosting false
 ucontrol move shootX shootY range 0 0
-jump 45 equal in_danger true
-jump 44 equal near_enough false
-jump 44 equal boosting true
+jump 46 equal in_danger true
+jump 45 equal near_enough false
+jump 45 equal boosting true
 ucontrol stop shootX shootY range 0 0
-jump 46 equal near_enough true
+jump 47 equal near_enough true
 ucontrol approach shootX shootY range 0 0
 ucontrol target shootX shootY shooting 0 0
-jump 52 strictEqual x null
+jump 53 strictEqual x null
 op equal not_within within false
 op equal not_shooting shooting false
 op land boost not_within not_shooting
